@@ -25,7 +25,7 @@ lines = [
 for line in lines:
     print(line)
 
-# Load the model from input port
+# Load the model from input port 1
 pathmodel = os.path.join(args.model_input, "trained_model")
 model = mlflow.sklearn.load_model(pathmodel)
 
