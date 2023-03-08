@@ -54,7 +54,7 @@ print("Coefficient of determination: %.2f" % r2_score(y_test, y_pred))
 print("Model: ", model)
 
 # Print the results of scoring the predictions against actual values in the test data
-# The coefficients
+# The coefficients f
 # print("Coefficients: \n", model)
 
 # # Load the model from input port
