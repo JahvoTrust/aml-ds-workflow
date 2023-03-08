@@ -130,7 +130,7 @@
         "    credential = InteractiveBrowserCredential()"
       ],
       "outputs": [],
-      "execution_count": 28,
+      "execution_count": 113,
       "metadata": {
         "attributes": {
           "classes": [
@@ -139,7 +139,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275388623
+          "logged": 1678281669523
         },
         "name": "import-mlclient"
       }
@@ -158,15 +158,15 @@
       "cell_type": "code",
       "source": [
         "# Get a handle to the workspace\n",
-        "# ml_client = MLClient(\n",
-        "#     credential=credential,\n",
-        "#     subscription_id=\"<subscription_id>\",\n",
-        "#     resource_group_name=\"<resource_group_name>\",\n",
-        "#     workspace_name=\"<workspace_name>\",\n",
-        "# )"
+        "ml_client = MLClient(\n",
+        "    credential=credential,\n",
+        "    subscription_id=\"<subscription_id>\",\n",
+        "    resource_group_name=\"<resource_group_name>\",\n",
+        "    workspace_name=\"<workspace_name>\",\n",
+        ")"
       ],
       "outputs": [],
-      "execution_count": 6,
+      "execution_count": 114,
       "metadata": {
         "attributes": {
           "classes": [
@@ -175,7 +175,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678273442243
+          "logged": 1678281671827
         },
         "name": "ml_client"
       }
@@ -192,10 +192,106 @@
         ")"
       ],
       "outputs": [],
-      "execution_count": 29,
+      "execution_count": 115,
       "metadata": {
         "gather": {
-          "logged": 1678275392093
+          "logged": 1678281674786
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from azure.ai.ml.entities import Data\r\n",
+        "from azure.ai.ml.constants import AssetTypes\r\n",
+        "\r\n",
+        "web_path = \"https://sscdata.blob.core.windows.net/input/creditcardclients.xls\"\r\n",
+        "\r\n",
+        "credit_data = Data(\r\n",
+        "    name=\"sscinpudata\",\r\n",
+        "    path=web_path,\r\n",
+        "    type=AssetTypes.URI_FILE,\r\n",
+        "    description=\"Dataset for credit card defaults\",\r\n",
+        "    tags={\"source_type\": \"web\", \"source\": \"UCI ML Repo\"},\r\n",
+        "    # version=\"1.0.1\",\r\n",
+        ")"
+      ],
+      "outputs": [],
+      "execution_count": 128,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1678282609731
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "credit_data = ml_client.data.create_or_update(credit_data)\r\n",
+        "print(\r\n",
+        "    f\"Dataset with name {credit_data.name} was registered to workspace, the dataset version is {credit_data.version}\"\r\n",
+        ")"
+      ],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": "Dataset with name sscinpudata was registered to workspace, the dataset version is 4\n"
+        }
+      ],
+      "execution_count": 129,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1678282615031
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "credit_data.version"
+      ],
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "execution_count": 121,
+          "data": {
+            "text/plain": "'3'"
+          },
+          "metadata": {}
+        }
+      ],
+      "execution_count": 121,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1678281736026
         }
       }
     },
@@ -312,7 +408,7 @@
     {
       "cell_type": "code",
       "source": [
-        "credit_data = ml_client.data.get(name=\"sscinpudata\", version=\"1\")\n",
+        "credit_data = ml_client.data.get(name=\"sscinpudata\", version=credit_data.version)\n",
         "print(\n",
         "    f\"Dataset with name {credit_data.name} was registered to workspace, the dataset version is {credit_data.version}\"\n",
         ")"
@@ -321,13 +417,13 @@
         {
           "output_type": "stream",
           "name": "stdout",
-          "text": "Dataset with name sscinpudata was registered to workspace, the dataset version is 1\n"
+          "text": "Dataset with name sscinpudata was registered to workspace, the dataset version is 4\n"
         }
       ],
-      "execution_count": 30,
+      "execution_count": 130,
       "metadata": {
         "gather": {
-          "logged": 1678275397652
+          "logged": 1678282622122
         },
         "jupyter": {
           "outputs_hidden": false,
@@ -355,10 +451,10 @@
           "text": "Dataset with name sscinpudatatest was registered to workspace, the dataset version is 1\n"
         }
       ],
-      "execution_count": 31,
+      "execution_count": 78,
       "metadata": {
         "gather": {
-          "logged": 1678275399831
+          "logged": 1678280298337
         }
       }
     },
@@ -428,10 +524,10 @@
           "text": "You already have a cluster named cpu-cluster, we'll reuse it as is.\nAMLCompute with name cpu-cluster is created, the compute size is STANDARD_DS3_V2\n"
         }
       ],
-      "execution_count": 32,
+      "execution_count": 79,
       "metadata": {
         "gather": {
-          "logged": 1678275407010
+          "logged": 1678280316306
         },
         "name": "cpu_cluster"
       }
@@ -457,10 +553,10 @@
         "os.makedirs(dependencies_dir, exist_ok=True)"
       ],
       "outputs": [],
-      "execution_count": 33,
+      "execution_count": 80,
       "metadata": {
         "gather": {
-          "logged": 1678275412087
+          "logged": 1678280320280
         },
         "name": "dependencies_dir"
       }
@@ -499,7 +595,7 @@
           "text": "Overwriting ./dependencies/conda.yml\n"
         }
       ],
-      "execution_count": 34,
+      "execution_count": 81,
       "metadata": {
         "attributes": {
           "classes": [
@@ -513,21 +609,21 @@
     {
       "cell_type": "code",
       "source": [
-        "%%writefile {dependencies_dir}/conda_score.yml\r\n",
-        "name: model-env\r\n",
-        "channels:\r\n",
-        "  - conda-forge\r\n",
-        "dependencies:\r\n",
-        "  - python=3.8\r\n",
-        "  - numpy=1.21.2\r\n",
-        "  - pip=21.2.4\r\n",
-        "  - scikit-learn=1.0.0\r\n",
-        "  - scipy=1.7.1\r\n",
-        "  - pandas>=1.1,<1.2\r\n",
-        "  - pip:\r\n",
-        "    - inference-schema[numpy-support]==1.3.0\r\n",
-        "    - xlrd==2.0.1\r\n",
-        "    - mlflow== 1.26.1\r\n",
+        "%%writefile {dependencies_dir}/conda_score.yml\n",
+        "name: model-env\n",
+        "channels:\n",
+        "  - conda-forge\n",
+        "dependencies:\n",
+        "  - python=3.8\n",
+        "  - numpy=1.21.2\n",
+        "  - pip=21.2.4\n",
+        "  - scikit-learn=1.0.0\n",
+        "  - scipy=1.7.1\n",
+        "  - pandas>=1.1,<1.2\n",
+        "  - pip:\n",
+        "    - inference-schema[numpy-support]==1.3.0\n",
+        "    - xlrd==2.0.1\n",
+        "    - mlflow== 1.26.1\n",
         "    - azureml-mlflow==1.42.0"
       ],
       "outputs": [
@@ -537,11 +633,11 @@
           "text": "Overwriting ./dependencies/conda_score.yml\n"
         }
       ],
-      "execution_count": 35,
+      "execution_count": 82,
       "metadata": {
         "jupyter": {
-          "source_hidden": false,
-          "outputs_hidden": false
+          "outputs_hidden": false,
+          "source_hidden": false
         },
         "nteract": {
           "transient": {
@@ -601,10 +697,10 @@
           "text": "Environment with name aml-score-custom is registered to workspace, the environment version is 0.1.0\n"
         }
       ],
-      "execution_count": 36,
+      "execution_count": 68,
       "metadata": {
         "gather": {
-          "logged": 1678275431960
+          "logged": 1678280068999
         }
       }
     },
@@ -636,7 +732,7 @@
           "text": "Environment with name aml-scikit-learn is registered to workspace, the environment version is 0.1.0\n"
         }
       ],
-      "execution_count": 37,
+      "execution_count": 69,
       "metadata": {
         "attributes": {
           "classes": [
@@ -645,7 +741,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275436635
+          "logged": 1678280079993
         },
         "name": "custom_env_name"
       }
@@ -682,7 +778,7 @@
         "os.makedirs(data_prep_src_dir, exist_ok=True)"
       ],
       "outputs": [],
-      "execution_count": 38,
+      "execution_count": 83,
       "metadata": {
         "attributes": {
           "classes": [
@@ -691,7 +787,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275441360
+          "logged": 1678280336930
         },
         "name": "data_prep_src_dir"
       }
@@ -739,10 +835,10 @@
         "data_prep_component = load_component(source=os.path.join(data_prep_src_dir, \"data_prep.yml\"))"
       ],
       "outputs": [],
-      "execution_count": 39,
+      "execution_count": 84,
       "metadata": {
         "gather": {
-          "logged": 1678275456200
+          "logged": 1678280346755
         },
         "jupyter": {
           "outputs_hidden": false,
@@ -906,7 +1002,7 @@
         "os.makedirs(train_src_dir, exist_ok=True)"
       ],
       "outputs": [],
-      "execution_count": 40,
+      "execution_count": 85,
       "metadata": {
         "attributes": {
           "classes": [
@@ -915,7 +1011,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275462566
+          "logged": 1678280360867
         },
         "name": "train_src_dir"
       }
@@ -956,7 +1052,7 @@
         "train_component = load_component(source=os.path.join(train_src_dir, \"train.yml\"))"
       ],
       "outputs": [],
-      "execution_count": 41,
+      "execution_count": 86,
       "metadata": {
         "attributes": {
           "classes": [
@@ -965,7 +1061,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275466510
+          "logged": 1678280364437
         },
         "name": "train_component"
       }
@@ -1031,10 +1127,10 @@
         "os.makedirs(score_src_dir, exist_ok=True)"
       ],
       "outputs": [],
-      "execution_count": 42,
+      "execution_count": 87,
       "metadata": {
         "gather": {
-          "logged": 1678275472489
+          "logged": 1678280368459
         },
         "jupyter": {
           "outputs_hidden": false,
@@ -1056,10 +1152,10 @@
         "score_component = load_component(source=os.path.join(score_src_dir, \"score.yml\"))"
       ],
       "outputs": [],
-      "execution_count": 50,
+      "execution_count": 88,
       "metadata": {
         "gather": {
-          "logged": 1678275881225
+          "logged": 1678280370280
         },
         "jupyter": {
           "outputs_hidden": false,
@@ -1192,7 +1288,7 @@
         "    }"
       ],
       "outputs": [],
-      "execution_count": 51,
+      "execution_count": 131,
       "metadata": {
         "attributes": {
           "classes": [
@@ -1201,7 +1297,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275886127
+          "logged": 1678282639218
         },
         "name": "pipeline"
       }
@@ -1212,6 +1308,68 @@
         "Now use your pipeline definition to instantiate a pipeline with your dataset, split rate of choice and the name you picked for your model."
       ],
       "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "credit_data"
+      ],
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "execution_count": 132,
+          "data": {
+            "text/plain": "Data({'skip_validation': False, 'mltable_schema_url': None, 'referenced_uris': None, 'type': 'uri_file', 'is_anonymous': False, 'auto_increment_version': False, 'name': 'sscinpudata', 'description': 'Dataset for credit card defaults', 'tags': {'source_type': 'web', 'source': 'UCI ML Repo'}, 'properties': {}, 'id': '/subscriptions/996049d2-a088-4535-84c6-293862437c2e/resourceGroups/rg-aml-demo/providers/Microsoft.MachineLearningServices/workspaces/ssc-mlops/data/sscinpudata/versions/4', 'Resource__source_path': None, 'base_path': '/mnt/batch/tasks/shared/LS_root/mounts/clusters/swkim1/code/Users/swkim/aml-ds-workflow', 'creation_context': <azure.ai.ml.entities._system_data.SystemData object at 0x7f90e689af50>, 'serialize': <msrest.serialization.Serializer object at 0x7f90e68979d0>, 'version': '4', 'latest_version': None, 'path': 'https://sscdata.blob.core.windows.net/input/creditcardclients.xls', 'datastore': None})"
+          },
+          "metadata": {}
+        }
+      ],
+      "execution_count": 132,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1678282642121
+        }
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "credit_evaldata.path"
+      ],
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "execution_count": 124,
+          "data": {
+            "text/plain": "'azureml://subscriptions/996049d2-a088-4535-84c6-293862437c2e/resourcegroups/rg-aml-demo/workspaces/ssc-mlops/datastores/sscblobdata/paths/creditcardclientstest.xls'"
+          },
+          "metadata": {}
+        }
+      ],
+      "execution_count": 124,
+      "metadata": {
+        "jupyter": {
+          "source_hidden": false,
+          "outputs_hidden": false
+        },
+        "nteract": {
+          "transient": {
+            "deleting": false
+          }
+        },
+        "gather": {
+          "logged": 1678281773736
+        }
+      }
     },
     {
       "cell_type": "code",
@@ -1228,7 +1386,7 @@
         ")"
       ],
       "outputs": [],
-      "execution_count": 52,
+      "execution_count": 133,
       "metadata": {
         "attributes": {
           "classes": [
@@ -1237,7 +1395,7 @@
           "id": ""
         },
         "gather": {
-          "logged": 1678275889114
+          "logged": 1678282667588
         },
         "name": "registered_model_name"
       }
@@ -1271,23 +1429,18 @@
       ],
       "outputs": [
         {
-          "output_type": "stream",
-          "name": "stderr",
-          "text": "\r\u001b[32mUploading score (0.0 MBs):   0%|          | 0/2934 [00:00<?, ?it/s]\r\u001b[32mUploading score (0.0 MBs): 100%|██████████| 2934/2934 [00:00<00:00, 92592.42it/s]\n\u001b[39m\n\n"
-        },
-        {
           "output_type": "execute_result",
-          "execution_count": 53,
+          "execution_count": 134,
           "data": {
             "text/plain": "False"
           },
           "metadata": {}
         }
       ],
-      "execution_count": 53,
+      "execution_count": 134,
       "metadata": {
         "gather": {
-          "logged": 1678275897361
+          "logged": 1678282676124
         },
         "name": "returned_job"
       }
@@ -1301,13 +1454,27 @@
         {
           "output_type": "stream",
           "name": "stdout",
-          "text": "RunId: jolly_sand_x86qdn99m6\nWeb View: https://ml.azure.com/runs/jolly_sand_x86qdn99m6?wsid=/subscriptions/996049d2-a088-4535-84c6-293862437c2e/resourcegroups/rg-aml-demo/workspaces/ssc-mlops\n\nStreaming logs/azureml/executionlogs.txt\n========================================\n\n[2023-03-08 11:45:01Z] Submitting 1 runs, first five are: 2abc1c3a:a38c7d70-fb3f-4900-91df-092028fe5e8e\n[2023-03-08 11:45:03Z] Completing processing run id a38c7d70-fb3f-4900-91df-092028fe5e8e.\n[2023-03-08 11:45:03Z] Submitting 1 runs, first five are: cf24b7e3:3defcc9a-993d-4648-b4d0-29048ecebd94\n"
+          "text": "RunId: tender_gas_l9tgc214w7\nWeb View: https://ml.azure.com/runs/tender_gas_l9tgc214w7?wsid=/subscriptions/996049d2-a088-4535-84c6-293862437c2e/resourcegroups/rg-aml-demo/workspaces/ssc-mlops\n\nStreaming logs/azureml/executionlogs.txt\n========================================\n\n[2023-03-08 13:37:56Z] Submitting 1 runs, first five are: 59fb6e48:bbf07388-4533-411a-9233-62dedca3a8f5\n[2023-03-08 13:40:50Z] Execution of experiment failed, update experiment status and cancel running nodes.\n\nExecution Summary\n=================\nRunId: tender_gas_l9tgc214w7\nWeb View: https://ml.azure.com/runs/tender_gas_l9tgc214w7?wsid=/subscriptions/996049d2-a088-4535-84c6-293862437c2e/resourcegroups/rg-aml-demo/workspaces/ssc-mlops\n"
+        },
+        {
+          "output_type": "error",
+          "ename": "JobException",
+          "evalue": "Exception : \n {\n    \"error\": {\n        \"code\": \"UserError\",\n        \"message\": \"Pipeline has some failed steps. See child run or execution logs for more details.\",\n        \"message_format\": \"Pipeline has some failed steps. {0}\",\n        \"message_parameters\": {},\n        \"reference_code\": \"PipelineHasStepJobFailed\",\n        \"details\": []\n    },\n    \"environment\": \"koreacentral\",\n    \"location\": \"koreacentral\",\n    \"time\": \"2023-03-08T13:40:50.038115Z\",\n    \"component_name\": \"\"\n} ",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mJobException\u001b[0m                              Traceback (most recent call last)",
+            "Input \u001b[0;32mIn [135]\u001b[0m, in \u001b[0;36m<cell line: 1>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0m \u001b[43mml_client\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mjobs\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mstream\u001b[49m\u001b[43m(\u001b[49m\u001b[43mpipeline_job\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mname\u001b[49m\u001b[43m)\u001b[49m\n",
+            "File \u001b[0;32m/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/azure/core/tracing/decorator.py:78\u001b[0m, in \u001b[0;36mdistributed_trace.<locals>.decorator.<locals>.wrapper_use_tracer\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m     76\u001b[0m span_impl_type \u001b[38;5;241m=\u001b[39m settings\u001b[38;5;241m.\u001b[39mtracing_implementation()\n\u001b[1;32m     77\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m span_impl_type \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n\u001b[0;32m---> 78\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mfunc\u001b[49m\u001b[43m(\u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43margs\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43mkwargs\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m     80\u001b[0m \u001b[38;5;66;03m# Merge span is parameter is set, but only if no explicit parent are passed\u001b[39;00m\n\u001b[1;32m     81\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m merge_span \u001b[38;5;129;01mand\u001b[39;00m \u001b[38;5;129;01mnot\u001b[39;00m passed_in_parent:\n",
+            "File \u001b[0;32m/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/azure/ai/ml/operations/_job_operations.py:617\u001b[0m, in \u001b[0;36mJobOperations.stream\u001b[0;34m(self, name)\u001b[0m\n\u001b[1;32m    614\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m _is_pipeline_child_job(job_object):\n\u001b[1;32m    615\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m PipelineChildJobError(job_id\u001b[38;5;241m=\u001b[39mjob_object\u001b[38;5;241m.\u001b[39mid)\n\u001b[0;32m--> 617\u001b[0m \u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_stream_logs_until_completion\u001b[49m\u001b[43m(\u001b[49m\n\u001b[1;32m    618\u001b[0m \u001b[43m    \u001b[49m\u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_runs_operations\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mjob_object\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_datastore_operations\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mrequests_pipeline\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_requests_pipeline\u001b[49m\n\u001b[1;32m    619\u001b[0m \u001b[43m\u001b[49m\u001b[43m)\u001b[49m\n",
+            "File \u001b[0;32m/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/azure/ai/ml/operations/_job_ops_helper.py:297\u001b[0m, in \u001b[0;36mstream_logs_until_completion\u001b[0;34m(run_operations, job_resource, datastore_operations, raise_exception_on_failed_job, requests_pipeline)\u001b[0m\n\u001b[1;32m    295\u001b[0m         file_handle\u001b[38;5;241m.\u001b[39mwrite(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;130;01m\\n\u001b[39;00m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m    296\u001b[0m     \u001b[38;5;28;01melse\u001b[39;00m:\n\u001b[0;32m--> 297\u001b[0m         \u001b[38;5;28;01mraise\u001b[39;00m JobException(\n\u001b[1;32m    298\u001b[0m             message\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mException : \u001b[39m\u001b[38;5;130;01m\\n\u001b[39;00m\u001b[38;5;124m \u001b[39m\u001b[38;5;132;01m{}\u001b[39;00m\u001b[38;5;124m \u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;241m.\u001b[39mformat(json\u001b[38;5;241m.\u001b[39mdumps(error, indent\u001b[38;5;241m=\u001b[39m\u001b[38;5;241m4\u001b[39m)),\n\u001b[1;32m    299\u001b[0m             target\u001b[38;5;241m=\u001b[39mErrorTarget\u001b[38;5;241m.\u001b[39mJOB,\n\u001b[1;32m    300\u001b[0m             no_personal_data_message\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mException raised on failed job.\u001b[39m\u001b[38;5;124m\"\u001b[39m,\n\u001b[1;32m    301\u001b[0m             error_category\u001b[38;5;241m=\u001b[39mErrorCategory\u001b[38;5;241m.\u001b[39mSYSTEM_ERROR,\n\u001b[1;32m    302\u001b[0m         )\n\u001b[1;32m    304\u001b[0m file_handle\u001b[38;5;241m.\u001b[39mwrite(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;130;01m\\n\u001b[39;00m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m    305\u001b[0m file_handle\u001b[38;5;241m.\u001b[39mflush()\n",
+            "\u001b[0;31mJobException\u001b[0m: Exception : \n {\n    \"error\": {\n        \"code\": \"UserError\",\n        \"message\": \"Pipeline has some failed steps. See child run or execution logs for more details.\",\n        \"message_format\": \"Pipeline has some failed steps. {0}\",\n        \"message_parameters\": {},\n        \"reference_code\": \"PipelineHasStepJobFailed\",\n        \"details\": []\n    },\n    \"environment\": \"koreacentral\",\n    \"location\": \"koreacentral\",\n    \"time\": \"2023-03-08T13:40:50.038115Z\",\n    \"component_name\": \"\"\n} "
+          ]
         }
       ],
-      "execution_count": 54,
+      "execution_count": 135,
       "metadata": {
         "gather": {
-          "logged": 1678276221236
+          "logged": 1678282877171
         },
         "jupyter": {
           "outputs_hidden": false,
