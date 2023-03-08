@@ -4,3 +4,5 @@
 - Azure Blob storage 에서 학습데이터 연동.  
 - MLFlow를 활용한 ML Tracking
 - Azure ML Example 참고
+
+![Screenshot that shows the AML Pipeline](media/pipeline.png "Overview of the pipeline")
